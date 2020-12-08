@@ -81,9 +81,7 @@ contract MooniswapOrders {
         _fromToken.safeApprove(address(_mooniswapPool), _fromAmount);
 
         // Swap(fromToken -> toToken)
-        _mooniswapPool.swap(_fromToken, _toToken, _fromAmount, _minReturn, _referral);
-
-        uint256 toAmount = _toToken.balanceOf(address(this));
+        uint256 toAmount = _mooniswapPool.swap(_fromToken, _toToken, _fromAmount, _minReturn, _referral);
 
         // Checks
         require(toAmount >= _minReturn, "MooniswapOrders: The swap return less tokens than _minReturn");

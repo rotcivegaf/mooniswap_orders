@@ -7,8 +7,10 @@ const MooniswapOrders = artifacts.require('MooniswapOrders');
 const {
   expect,
   bn,
+  address0x,
   random32,
   toETH,
+  tryCatchRevert,
   toEvents,
 } = require('./Helper.js');
 
@@ -51,6 +53,17 @@ contract('MooniswapOrders', function (accounts) {
     mooniFactory = await MooniFactory.new();
 
     mooniswapOrders = await MooniswapOrders.new();
+
+    await mooniFactory.deploy(WETH.address, DAI.address);
+    mooniswapPool = await Mooniswap.at(await mooniFactory.pools(WETH.address, DAI.address));
+
+    await WETH.mint(sender, toETH('1'));
+    await WETH.approve(mooniswapPool.address, toETH('1'), { from: sender });
+
+    await DAI.mint(sender, toETH('600'));
+    await DAI.approve(mooniswapPool.address, toETH('600'), { from: sender });
+
+    await mooniswapPool.deposit([toETH('600'), toETH('1')], [0, 0], { from: sender });
   });
 
   it('Function cancelOrder', async () => {
@@ -83,18 +96,6 @@ contract('MooniswapOrders', function (accounts) {
     assert.isTrue(await mooniswapOrders.canceledOrders(signer, orderId));
   });
   describe('Function executeOrder', async function () {
-    beforeEach(async function () {
-      await mooniFactory.deploy(WETH.address, DAI.address);
-      mooniswapPool = await Mooniswap.at(await mooniFactory.pools(WETH.address, DAI.address));
-
-      await WETH.mint(sender, toETH('1'));
-      await WETH.approve(mooniswapPool.address, toETH('1'), { from: sender });
-
-      await DAI.mint(sender, toETH('600'));
-      await DAI.approve(mooniswapPool.address, toETH('600'), { from: sender });
-
-      await mooniswapPool.deposit([toETH('600'), toETH('1')], [0, 0], { from: sender });
-    });
     it('Sign and execute an order', async function () {
       const fromAmount = bn(100000);
       const expiry = bn('9999999999999999999999999999999');
@@ -147,6 +148,78 @@ contract('MooniswapOrders', function (accounts) {
       expect(await DAI.balanceOf(mooniswapOrders.address)).to.eq.BN(prevMooniswapOrdersBalDAI);
       expect(await WETH.balanceOf(sender)).to.eq.BN(prevSenderBalWETH);
       expect(await WETH.balanceOf(mooniswapOrders.address)).to.eq.BN(prevMooniswapOrdersBalWETH);
+    });
+    it('Try execute an expired order', async function () {
+      const expiry = bn(100);
+      const salt = random32();
+      const signature = await calcSig(mooniswapPool.address, DAI.address, WETH.address, bn(1), bn(1), bn(1), address0x, expiry, salt, signer);
+
+      await tryCatchRevert(
+        () => mooniswapOrders.executeOrder(
+          mooniswapPool.address, DAI.address, WETH.address, bn(1), bn(1), bn(1), address0x, expiry, salt, signature, { from: sender },
+        ),
+        'MooniswapOrders: The signature has expired',
+      );
+    });
+    it('Try execute an order twice', async function () {
+      const salt = random32();
+      const signature = await calcSig(mooniswapPool.address, DAI.address, WETH.address, bn(1000), bn(0), bn(1000), address0x, bn('999999999999'), salt, signer);
+      const orderId = calcOrderId(mooniswapPool.address, DAI.address, WETH.address, bn(1000), bn(0), bn(1000), address0x, bn('999999999999'), salt);
+
+      assert.isFalse(await mooniswapOrders.canceledOrders(signer, orderId));
+
+      await DAI.mint(signer, bn(1000));
+      await DAI.approve(mooniswapOrders.address, bn(1000), { from: signer });
+
+      await mooniswapOrders.executeOrder(mooniswapPool.address, DAI.address, WETH.address, bn(1000), bn(0), bn(1000), address0x, bn('999999999999'), salt, signature, { from: sender });
+
+      assert.isTrue(await mooniswapOrders.canceledOrders(signer, orderId));
+
+      await tryCatchRevert(
+        () => mooniswapOrders.executeOrder(
+          mooniswapPool.address, DAI.address, WETH.address, bn(1000), bn(0), bn(1000), address0x, bn('999999999999'), salt, signature, { from: sender },
+        ),
+        'MooniswapOrders: The loan hash was canceled',
+      );
+
+      assert.isTrue(await mooniswapOrders.canceledOrders(signer, orderId));
+    });
+    // TODO: test with fake mooniswapPool
+    it.skip('Try execute an order with high price', async function () {
+      const fromAmount = bn(100000);
+      const toAmount = await mooniswapPool.getReturn(DAI.address, WETH.address, fromAmount);
+      const minReturn = toAmount.add(bn(1));
+      const maxLoss = toAmount;
+      const salt = random32();
+      const signature = await calcSig(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, address0x, bn('999999999999'), salt, signer);
+
+      await DAI.mint(signer, fromAmount);
+      await DAI.approve(mooniswapOrders.address, fromAmount, { from: signer });
+
+      await tryCatchRevert(
+        () => mooniswapOrders.executeOrder(
+          mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, address0x, bn('999999999999'), salt, signature, { from: sender },
+        ),
+        'MooniswapOrders: The swap return less tokens than _minReturn',
+      );
+    });
+    it('Try execute a stop loss order with low price', async function () {
+      const fromAmount = bn(100000);
+      const toAmount = await mooniswapPool.getReturn(DAI.address, WETH.address, fromAmount);
+      const minReturn = toAmount;
+      const maxLoss = toAmount.sub(bn(1));
+      const salt = random32();
+      const signature = await calcSig(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, address0x, bn('999999999999'), salt, signer);
+
+      await DAI.mint(signer, fromAmount);
+      await DAI.approve(mooniswapOrders.address, fromAmount, { from: signer });
+
+      await tryCatchRevert(
+        () => mooniswapOrders.executeOrder(
+          mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, address0x, bn('999999999999'), salt, signature, { from: sender },
+        ),
+        'MooniswapOrders: The swap return more tokens than _maxLoss',
+      );
     });
   });
 });
