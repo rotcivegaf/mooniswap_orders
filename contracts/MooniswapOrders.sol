@@ -3,13 +3,14 @@ pragma solidity ^0.6.0;
 import "@openzeppelin/contracts/token/ERC20/SafeERC20.sol";
 
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./interfaces/IMooniswap.sol";
+import "./mooniswap/Mooniswap.sol";
 
 contract MooniswapOrders {
     using SafeERC20 for IERC20;
 
     event ExecuteOrder(
-        address indexed _owner,
+        bytes32 indexed _orderId,
+        Mooniswap _mooniswapPool,
         IERC20 _fromToken,
         IERC20 _toToken,
         uint256 _fromAmount,
@@ -18,12 +19,12 @@ contract MooniswapOrders {
         address _referral,
         uint256 _expiry,
         bytes32 _salt,
-        uint256 _toAmount,
         bytes _signature
     );
 
     event CancelOrder(
         bytes32 indexed _orderId,
+        Mooniswap _mooniswapPool,
         IERC20 _fromToken,
         IERC20 _toToken,
         uint256 _fromAmount,
@@ -34,15 +35,10 @@ contract MooniswapOrders {
         bytes32 _salt
     );
 
-    IMooniswap immutable public mooniswap;
-
     mapping(address => mapping(bytes32 => bool)) public canceledOrders;
 
-    constructor(IMooniswap _mooniswap) public {
-        mooniswap = _mooniswap;
-    }
-
     function cancelOrder(
+        Mooniswap _mooniswapPool,
         IERC20 _fromToken,
         IERC20 _toToken,
         uint256 _fromAmount,
@@ -52,14 +48,15 @@ contract MooniswapOrders {
         uint256 _expiry,
         bytes32 _salt
     ) external {
-        bytes32 orderId = _toOrder(_fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
+        bytes32 orderId = _toOrder(_mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
 
         canceledOrders[msg.sender][orderId] = true;
 
-        emit CancelOrder(orderId, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
+        emit CancelOrder(orderId, _mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
     }
 
     function executeOrder(
+        Mooniswap _mooniswapPool,
         IERC20 _fromToken,
         IERC20 _toToken,
         uint256 _fromAmount,
@@ -73,8 +70,7 @@ contract MooniswapOrders {
         // solium-disable-next-line
         require(now <= _expiry, "MooniswapOrders: The signature has expired");
 
-        bytes32 orderId = _toOrder(_fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
-
+        bytes32 orderId = _toOrder(_mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
         address owner = recoveryOwner(orderId, _signature);
 
         require(!canceledOrders[owner][orderId], "MooniswapOrders: The loan hash was canceled");
@@ -82,10 +78,10 @@ contract MooniswapOrders {
 
         // Take the owner from tokens and approve the Mooniswap contract
         _fromToken.safeTransferFrom(owner, address(this), _fromAmount);
-        _fromToken.safeApprove(address(mooniswap), _fromAmount);
+        _fromToken.safeApprove(address(_mooniswapPool), _fromAmount);
 
         // Swap(fromToken -> toToken)
-        mooniswap.swap(_fromToken, _toToken, _fromAmount, _minReturn, _referral);
+        _mooniswapPool.swap(_fromToken, _toToken, _fromAmount, _minReturn, _referral);
 
         uint256 toAmount = _toToken.balanceOf(address(this));
 
@@ -95,9 +91,9 @@ contract MooniswapOrders {
         require(toAmount <= _maxLoss, "MooniswapOrders: The swap return more tokens than _maxLoss");
 
         // Send the to tokens to the owner
-        _toToken.safeTransfer(owner, toAmount);
+        _toToken.safeTransfer(owner, _toToken.balanceOf(address(this)));
 
-        emit ExecuteOrder(owner, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt, toAmount, _signature);
+        emit ExecuteOrder(orderId, _mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt, _signature);
     }
 
     function recoveryOwner(bytes32 _orderId, bytes memory _signature) internal pure returns (address) {
@@ -127,6 +123,7 @@ contract MooniswapOrders {
     }
 
     function _toOrder(
+        Mooniswap _mooniswapPool,
         IERC20 _fromToken,
         IERC20 _toToken,
         uint256 _fromAmount,
@@ -137,7 +134,8 @@ contract MooniswapOrders {
         bytes32 _salt
     ) internal pure returns (bytes32) {
         return keccak256(
-            abi.encode(
+            abi.encodePacked(
+                _mooniswapPool,
                 _fromToken,
                 _toToken,
                 _fromAmount,
