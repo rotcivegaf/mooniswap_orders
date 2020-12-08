@@ -34,7 +34,7 @@ contract('MooniswapOrders', function (accounts) {
       { t: 'uint256', v: maxLoss },
       { t: 'address', v: referral },
       { t: 'uint256', v: expiry },
-      { t: 'bytes32', v: salt }
+      { t: 'bytes32', v: salt },
     );
   }
 
@@ -66,7 +66,7 @@ contract('MooniswapOrders', function (accounts) {
 
     const CancelOrder = await toEvents(
       mooniswapOrders.cancelOrder(sender, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt, { from: signer }),
-      'CancelOrder'
+      'CancelOrder',
     );
 
     assert.equal(CancelOrder._orderId, orderId);
@@ -120,7 +120,7 @@ contract('MooniswapOrders', function (accounts) {
 
       const ExecuteOrder = await toEvents(
         mooniswapOrders.executeOrder(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt, signature, { from: sender }),
-        'ExecuteOrder'
+        'ExecuteOrder',
       );
 
       const orderId = calcOrderId(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt);
