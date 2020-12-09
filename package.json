@@ -1,0 +1,18 @@
+{
+  "name": "mooniswap_orders",
+  "version": "1.0.0",
+  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rotcivegaf/mooniswap_orders.git"
+  },
+  "author": "Rotcivegaf",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rotcivegaf/mooniswap_orders/issues"
+  },
+  "homepage": "https://github.com/rotcivegaf/mooniswap_orders#readme",
+  "dependencies": {
+    "redis": "^3.0.2"
+  }
+}
