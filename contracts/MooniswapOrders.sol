@@ -130,7 +130,7 @@ contract MooniswapOrders {
         address _referral,
         uint256 _expiry,
         bytes32 _salt
-    ) internal returns (bytes32) {
+    ) internal view returns (bytes32) {
         return keccak256(
             abi.encodePacked(
                 address(this),
