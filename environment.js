@@ -13,7 +13,8 @@ module.exports = {
     redisUrl: redisUrl,
   },
   ropsten: {
+    BOT_PK: '0x0000000000000000000000000000000000000000000000000000000000000006',
     nodeEth: nodes.infura.ropsten,
     redisUrl: redisUrl,
-  }
+  },
 };
