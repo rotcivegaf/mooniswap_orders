@@ -1,9 +1,9 @@
 const redis = require('redis');
 const { promisify } = require('util');
-const utils = require("./utils.js");
+const utils = require('./utils.js');
 
 module.exports = class RedisClient {
-  async init() {
+  async init () {
     this.client = await this.getClient();
 
     this.existsAsync = promisify(this.client.exists).bind(this.client);
@@ -21,37 +21,34 @@ module.exports = class RedisClient {
     return this;
   }
 
-  async setAsync(key, data) {
+  async setAsync (key, data) {
     const setAsync = promisify(this.client.set).bind(this.client);
-    if(typeof data !== 'string')
-      data = data.toString();
+    if (typeof data !== 'string') { data = data.toString(); }
 
     return setAsync(key, data);
   }
 
-  async hsetAsync(key, field, data) {
+  async hsetAsync (key, field, data) {
     const hsetAsync = promisify(this.client.hset).bind(this.client);
-    if(typeof data !== 'string')
-      data = data.toString();
+    if (typeof data !== 'string') { data = data.toString(); }
 
     return hsetAsync(key, field, data);
   }
 
-  async arrayUniquePush(key, element) {
-    if ((await this.existsAsync(key)) != 0)
-      await this.lremAsync(key, 0, element);
+  async arrayUniquePush (key, element) {
+    if ((await this.existsAsync(key)) !== 0) { await this.lremAsync(key, 0, element); }
 
     await this.rpushAsync(key, element);
   }
 
-  async getClient() {
-    const client = redis.createClient(process.environment.redisUrl);
+  async getClient () {
+    const client = redis.createClient(process.configDefault.redisUrl);
 
     const _this = this;
-    client.on('connect', function() {
+    client.on('connect', function () {
       console.log('Connected to Redis');
-      //client.flushdb(); // To delete DB
-      //console.log('DB deleted');
+      // client.flushdb(); // To delete DB
+      // console.log('DB deleted');
       _this.ready = true;
     });
 
@@ -64,14 +61,12 @@ module.exports = class RedisClient {
     return client;
   }
 
-  async getValues(key) {
-    if (typeof key !== 'string')
-      key = key.join(':');
+  async getValues (key) {
+    if (typeof key !== 'string') { key = key.join(':'); }
 
     const keys = await process.redis.getKeysAsync(key);
 
-    if (keys.length === 0)
-      return [];
+    if (keys.length === 0) { return []; }
 
     try {
       const m = await process.redis.mgetAsync(keys);
@@ -87,9 +82,8 @@ module.exports = class RedisClient {
     }
   }
 
-  async getValue(key) {
-    if (typeof key !== 'string')
-      key = key.join(':');
+  async getValue (key) {
+    if (typeof key !== 'string') { key = key.join(':'); }
 
     try {
       return process.redis.getAsync(key);

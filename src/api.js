@@ -1,9 +1,9 @@
 // Api
-const express = require("express");
+const express = require('express');
 const app = express();
 const cors = require('cors');
-const bodyParser = require("body-parser");
-const checkOrder = require("./checkOrder.js");
+const bodyParser = require('body-parser');
+const checkOrder = require('./checkOrder.js');
 
 const PORT = process.env.PORT || 5000;
 
@@ -12,14 +12,14 @@ module.exports = async () => {
   app.use(bodyParser.json());
   app.use(cors());
 
-  app.listen(PORT, () => console.info(`Listening on ${ PORT }`));
+  app.listen(PORT, () => console.info(`Listening on ${PORT}`));
 
   app.get('/order/:order', async (req, res) => res.json(
-    await process.redis.getValue(['order', req.params.order])
+    await process.redis.getValue(['order', req.params.order]),
   ));
 
   app.get('/orders', async (_, res) => res.json(
-    await process.redis.getValues('order:*')
+    await process.redis.getValues('order:*'),
   ));
 
   app.post('/addOrder', async (req, res) => {
@@ -27,8 +27,8 @@ module.exports = async () => {
 
     const key = ['order', order.signature].join(':');
 
-    if(await process.redis.getValue(key)) {
-      res.status(200).send("The order exists");
+    if (await process.redis.getValue(key)) {
+      res.status(200).send('The order exists');
       return;
     }
 
@@ -47,7 +47,7 @@ module.exports = async () => {
 
       order.owner = process.web3.eth.accounts.recover(order.orderId, order.signature);
     } catch (error) {
-      res.status(200).send("Wrong inputs: " + JSON.stringify(order));
+      res.status(200).send('Wrong inputs: ' + JSON.stringify(order));
       return;
     }
 

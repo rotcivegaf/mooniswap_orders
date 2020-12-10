@@ -2,6 +2,10 @@
   "name": "mooniswap_orders",
   "version": "1.0.0",
   "description": "",
+  "scripts": {
+    "lint:js": "node_modules/.bin/eslint .",
+    "lint:js:fix": "node_modules/.bin/eslint . --fix"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/rotcivegaf/mooniswap_orders.git"
@@ -21,6 +25,11 @@
   },
   "devDependencies": {
     "axios": "^0.21.0",
-    "eslint": "^7.15.0"
+    "eslint": "^7.15.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.13.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.8.0",
+    "eslint-plugin-standard": "^3.1.0"
   }
 }
