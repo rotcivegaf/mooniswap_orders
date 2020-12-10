@@ -28,6 +28,7 @@ contract('MooniswapOrders', function (accounts) {
 
   function calcOrderId (mooniswapPoolAddress, fromToken, toToken, fromAmount, minReturn, maxLoss, referral, expiry, salt) {
     return web3.utils.soliditySha3(
+      { t: 'address', v: mooniswapOrders.address },
       { t: 'address', v: mooniswapPoolAddress },
       { t: 'address', v: fromToken },
       { t: 'address', v: toToken },
