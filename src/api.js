@@ -40,6 +40,7 @@ module.exports = async () => {
 
     try {
       order.orderId = process.web3.utils.soliditySha3(
+        { t: 'address', v: order.mooniswapOrdersAddress },
         { t: 'address', v: order.mooniswapPoolAddress },
         { t: 'address', v: order.fromToken },
         { t: 'address', v: order.toToken },
