@@ -19,6 +19,5 @@ module.exports = async () => {
 };
 
 function initEnv () {
-  return env.ropsten;
-  // env[program.configDefault ? program.configDefault : 'main'];
+  return env.heroku;
 }
