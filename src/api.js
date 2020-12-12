@@ -32,6 +32,12 @@ module.exports = async () => {
       return;
     }
 
+    order.message = await checkOrder.checkNewOrder(order);
+
+    if (order.message !== 'OK') {
+      res.status(201).send(order.message);
+    }
+
     try {
       order.orderId = process.web3.utils.soliditySha3(
         { t: 'address', v: order.mooniswapPoolAddress },
@@ -53,17 +59,11 @@ module.exports = async () => {
         v: '0x' + order.signature.substring(2).substring(128, 130),
       });
     } catch (error) {
-      res.status(200).send('Wrong inputs: ' + JSON.stringify(order));
+      res.status(201).send('Wrong inputs: ' + JSON.stringify(order));
       return;
     }
 
-    order.message = await checkOrder.checkNewOrder(order);
-
-    if (order.message === 'OK') {
-      await process.redis.setAsync(key, JSON.stringify(order));
-      res.status(200).send(order);
-    } else {
-      res.status(200).send(order.message);
-    }
+    await process.redis.setAsync(key, JSON.stringify(order));
+    res.status(200).send(order);
   });
 };
