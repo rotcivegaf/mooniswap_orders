@@ -4,7 +4,7 @@
       <div class="col-sm-2" />
 
       <div class="col-sm-8">
-        <form>
+        <form class="review-form" @submit.prevent="onSubmit">
           <div class="navbar-nav h1 text-center mb-3">
             Sign Order and Provide
           </div>
@@ -152,11 +152,21 @@ export default {
         window.alert("Invalid data");
       }
 
-      args.signature = await this.web3.eth.sign(args.orderId, this.user); // TODO: fix it, the signature its wrong
+      args.signature = await this.web3.eth.sign(args.orderId, this.user);
 
-      args.owner = this.web3.eth.accounts.recover(args.orderId, args.signature);
-      if (args.owner === this.user) await api.saveOrder(args);
-      else window.alert("Ownership error");
+      args.owner = this.web3.eth.accounts.recover({
+        messageHash: args.orderId,
+        r: '0x' + args.signature.substring(2).substring(0, 64),
+        s: '0x' + args.signature.substring(2).substring(64, 128),
+        signature: args.signature,
+        v: '0x' + args.signature.substring(2).substring(128, 130)
+      });
+
+      if (args.owner === this.user) {
+        await api.saveOrder(args);
+      } else {
+        window.alert("Ownership error");
+      }
     }
   }
 };
