@@ -45,7 +45,13 @@ module.exports = async () => {
         { t: 'bytes32', v: order.salt },
       );
 
-      order.owner = process.web3.eth.accounts.recover(order.orderId, order.signature);
+      order.owner = this.web3.eth.accounts.recover({
+        messageHash: order.orderId,
+        r: '0x' + order.signature.substring(2).substring(0, 64),
+        s: '0x' + order.signature.substring(2).substring(64, 128),
+        signature: order.signature,
+        v: '0x' + order.signature.substring(2).substring(128, 130),
+      });
     } catch (error) {
       res.status(200).send('Wrong inputs: ' + JSON.stringify(order));
       return;
