@@ -25,15 +25,7 @@ module.exports = async () => {
   app.post('/addOrder', async (req, res) => {
     const order = req.body;
 
-    const key = ['order', order.signature].join(':');
-
-    if (await process.redis.getValue(key)) {
-      res.status(200).send('The order exists');
-      return;
-    }
-
     order.message = await checkOrder.checkNewOrder(order);
-
     if (order.message !== 'OK') {
       res.status(201).send(order.message);
     }
@@ -62,6 +54,13 @@ module.exports = async () => {
     } catch (e) {
       console.log(e);
       res.status(201).send(e.message);
+      return;
+    }
+
+    const key = ['order', order.orderId].join(':');
+
+    if (await process.redis.getValue(key)) {
+      res.status(200).send('The order exists');
       return;
     }
 
