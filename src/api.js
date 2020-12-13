@@ -60,7 +60,7 @@ module.exports = async () => {
         v: '0x' + order.signature.substring(2).substring(128, 130),
       });
     } catch (error) {
-      res.status(201).send('Wrong inputs: ' + JSON.stringify(order));
+      res.status(201).send(error);
       return;
     }
 
