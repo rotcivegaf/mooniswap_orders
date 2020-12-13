@@ -59,8 +59,9 @@ module.exports = async () => {
         signature: order.signature,
         v: '0x' + order.signature.substring(2).substring(128, 130),
       });
-    } catch (error) {
-      res.status(201).send(error);
+    } catch (e) {
+      console.log(e);
+      res.status(201).send(e.message);
       return;
     }
 
