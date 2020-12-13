@@ -52,7 +52,7 @@ module.exports = async () => {
         { t: 'bytes32', v: order.salt },
       );
 
-      order.owner = this.web3.eth.accounts.recover({
+      order.owner = process.web3.eth.accounts.recover({
         messageHash: order.orderId,
         r: '0x' + order.signature.substring(2).substring(0, 64),
         s: '0x' + order.signature.substring(2).substring(64, 128),
