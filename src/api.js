@@ -67,4 +67,9 @@ module.exports = async () => {
     await process.redis.setAsync(key, JSON.stringify(order));
     res.status(200).send(order);
   });
+
+  // Remove, only for tests
+  app.get('/deleteAll', async (_, res) => res.json(
+    await process.redis.clearAllData(),
+  ));
 };

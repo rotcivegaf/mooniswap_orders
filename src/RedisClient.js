@@ -47,8 +47,6 @@ module.exports = class RedisClient {
     const _this = this;
     client.on('connect', function () {
       console.log('Connected to Redis');
-      // client.flushdb(); // To delete DB
-      // console.log('DB deleted');
       _this.ready = true;
     });
 
