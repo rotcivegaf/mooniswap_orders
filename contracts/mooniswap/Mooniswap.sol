@@ -192,7 +192,7 @@ contract Mooniswap is ERC20, ReentrancyGuard, Ownable {
         emit Deposited(msg.sender, fairSupply);
     }
 
-    function withdraw(uint256 amount, uint256[] calldata minReturns) external nonReentrant {
+    function withdraw(uint256 amount, uint256[] memory minReturns) external nonReentrant {
         uint256 totalSupply = totalSupply();
         _burn(msg.sender, amount);
 
