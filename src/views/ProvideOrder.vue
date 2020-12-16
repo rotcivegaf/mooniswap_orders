@@ -58,14 +58,14 @@ export default {
       web3: undefined,
       user: undefined,
       inputs: {
-        fromToken:              { type: "address", text: "From Token",      valid: null, value: "0xc778417E063141139Fce010982780140Aa0cD5Ab" }, // WETH
-        toToken:                { type: "address", text: "To Token",        valid: null, value: "0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF" }, // USDC
-        fromAmount:             { type: "number",  text: "From Amount",     valid: null, value: "1" },
-        minReturn:              { type: "number",  text: "Min Return",      valid: null, value: "1" },
-        maxLoss:                { type: "number",  text: "Max Loss",        valid: null, value: "1" },
-        referral:               { type: "address", text: "Referral",        valid: null, value: "0x225bEA75d0B4c0686597097d28d81DB86b42ee78" },
-        expiry:                 { type: "number",  text: "Expiry",          valid: null, value: "1610074847" },
-        salt:                   { type: "hex32",   text: "Salt",            valid: null, value: "0x225bEA1275d0B4c0686597097d28d81DB86b42ee781234567891234567891234" }
+        fromToken:  { type: "address", text: "From Token",  valid: null, value: "0xc778417E063141139Fce010982780140Aa0cD5Ab" }, // WETH
+        toToken:    { type: "address", text: "To Token",    valid: null, value: "0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF" }, // USDC
+        fromAmount: { type: "number",  text: "From Amount", valid: null, value: "1" },
+        minReturn:  { type: "number",  text: "Min Return",  valid: null, value: "1" },
+        maxLoss:    { type: "number",  text: "Max Loss",    valid: null, value: "1" },
+        referral:   { type: "address", text: "Referral",    valid: null, value: "0x225bEA75d0B4c0686597097d28d81DB86b42ee78" },
+        expiry:     { type: "number",  text: "Expiry",      valid: null, value: "1610074847" },
+        salt:       { type: "hex32",   text: "Salt",        valid: null, value: "0x225bEA1275d0B4c0686597097d28d81DB86b42ee781234567891234567891234" }
       }
     };
   },
