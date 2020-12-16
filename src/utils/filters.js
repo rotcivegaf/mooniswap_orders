@@ -49,28 +49,32 @@ const toFormatId = function(strNumber, maxDigits = 2) {
   else return intPart + " ";
 };
 
-const toFormatPrice = function(strNumber, symbol = "ETH", maxDigits = 2) {
+const toFormatPrice = function(strNumber, symbol = "E^18", maxDigits = 2) {
   strNumber = web3Utils.toBN(strNumber).toString();
-  if (strNumber.length <= maxDigits)
-    // aprox 0
+
+  const maxDec = 10;
+
+  if (strNumber.length <= maxDec)
     return strNumber + " WEI";
 
   if (strNumber.length <= ethLength) {
     const zeros = "0".repeat(ethLength - strNumber.length);
-    strNumber = strNumber.slice(0, maxDigits - zeros.length);
+    strNumber = zeros + strNumber;
+    strNumber = strNumber.slice(0, maxDec);
 
     if (symbol) symbol = " " + symbol;
 
-    return "0." + zeros + cutZeros(strNumber) + symbol;
+    return "0." + strNumber + symbol;
   }
 
   const intPart = strNumber.slice(0, strNumber.length - ethLength);
 
-  const decPart =
-    "." + cutZeros(strNumber.slice(intPart.length, maxDigits + intPart.length));
-
-  if (decPart != ".") return intPart + decPart + " " + symbol;
-  else return intPart + " " + symbol;
+  if (strNumber.length >= 18 + maxDec - maxDigits) {
+    return intPart + " " + symbol;
+  } else {
+    const decPart = "." + cutZeros(strNumber.slice(intPart.length, maxDigits + intPart.length));
+    return intPart + decPart + " " + symbol;
+  }
 };
 
 function convertDate(inputFormat) {
