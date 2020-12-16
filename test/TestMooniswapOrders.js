@@ -75,7 +75,7 @@ contract('MooniswapOrders', function (accounts) {
     const salt = random32();
 
     const orderIdLocal = calcOrderId(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt);
-    const orderId = await mooniswapOrders.toOrderId(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt)
+    const orderId = await mooniswapOrders.toOrderId(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt);
 
     assert.equal(orderIdLocal, orderId);
   });
