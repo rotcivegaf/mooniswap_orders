@@ -66,7 +66,7 @@ module.exports = async () => {
 
     try {
       process.contracts.erc20._address = order.fromToken;
-      order.fromTokenName = await process.contracts.erc20.methods.name().call();
+      order.fromTokenSymbol = await process.contracts.erc20.methods.symbol().call();
     } catch (e) {
       console.log(e);
       res.status(201).send(e.message);
@@ -75,7 +75,7 @@ module.exports = async () => {
 
     try {
       process.contracts.erc20._address = order.toToken;
-      order.toTokenName = await process.contracts.erc20.methods.name().call();
+      order.toTokenSymbol = await process.contracts.erc20.methods.symbol().call();
     } catch (e) {
       console.log(e);
       res.status(201).send(e.message);
