@@ -67,6 +67,31 @@ contract('MooniswapOrders', function (accounts) {
     await mooniswapPool.deposit([toETH('600'), toETH('1')], [0, 0], { from: sender });
   });
 
+  it('Function toOrderId', async () => {
+    const fromAmount = bn(1);
+    const minReturn = bn(12);
+    const maxLoss = bn(123);
+    const expiry = bn(1234);
+    const salt = random32();
+
+    const orderIdLocal = calcOrderId(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt);
+    const orderId = await mooniswapOrders.toOrderId(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt)
+
+    assert.equal(orderIdLocal, orderId);
+  });
+  it('Function signatureToOwner', async () => {
+    const fromAmount = bn(1);
+    const minReturn = bn(12);
+    const maxLoss = bn(123);
+    const expiry = bn(1234);
+    const salt = random32();
+
+    const signature = await calcSig(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt, signer);
+
+    const owner = await mooniswapOrders.signatureToOwner(mooniswapPool.address, DAI.address, WETH.address, fromAmount, minReturn, maxLoss, referral, expiry, salt, signature);
+
+    assert.equal(owner, signer);
+  });
   it('Function cancelOrder', async () => {
     const fromAmount = bn(1);
     const minReturn = bn(12);

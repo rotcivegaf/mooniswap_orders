@@ -146,4 +146,34 @@ contract MooniswapOrders {
             )
         );
     }
+
+    function toOrderId(
+        Mooniswap _mooniswapPool,
+        IERC20 _fromToken,
+        IERC20 _toToken,
+        uint256 _fromAmount,
+        uint256 _minReturn,
+        uint256 _maxLoss,
+        address _referral,
+        uint256 _expiry,
+        bytes32 _salt
+    ) external view returns (bytes32) {
+        return _toOrder(_mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
+    }
+
+    function signatureToOwner(
+        Mooniswap _mooniswapPool,
+        IERC20 _fromToken,
+        IERC20 _toToken,
+        uint256 _fromAmount,
+        uint256 _minReturn,
+        uint256 _maxLoss,
+        address _referral,
+        uint256 _expiry,
+        bytes32 _salt,
+        bytes calldata _signature
+    ) external view returns(address) {
+        bytes32 orderId = _toOrder(_mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
+        return recoveryOwner(orderId, _signature);
+    }
 }
