@@ -64,6 +64,24 @@ module.exports = async () => {
       return;
     }
 
+    try {
+      process.contracts.erc20._address = order.fromToken;
+      order.fromTokenName = await process.erc20.methods.name().call();
+    } catch (e) {
+      console.log(e);
+      res.status(201).send(e.message);
+      return;
+    }
+
+    try {
+      process.contracts.erc20._address = order.toToken;
+      order.toTokenName = await process.erc20.methods.name().call();
+    } catch (e) {
+      console.log(e);
+      res.status(201).send(e.message);
+      return;
+    }
+
     await process.redis.setAsync(key, JSON.stringify(order));
     res.status(200).send(order);
   });

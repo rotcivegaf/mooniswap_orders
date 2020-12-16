@@ -14,6 +14,7 @@ module.exports = async () => {
 
   process.contracts = [];
   process.contracts.mooniswapOrders = new process.web3.eth.Contract(require('./abis/MooniswapOrders.json'));
+  process.contracts.erc20 = new process.web3.eth.Contract(require('./abis/ERC20.json'));
 
   process.walletManager = new WalletManager();
 };
