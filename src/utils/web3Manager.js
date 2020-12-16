@@ -1,5 +1,9 @@
 import Web3 from "web3";
 
+const mooniswapOrdersAddress = "0xc1A13F4B815f5362CA62D47ebdC4874dB3c4a2Ca";
+const mooniFactoryAddress = "0xcdDB95AbF5Da5395F7De7936CE7Cf569aF891651";
+const address0x = "0x0000000000000000000000000000000000000000";
+
 const instanceWeb3 = async function() {
   let web3Instance = null;
 
@@ -36,7 +40,29 @@ const getUser = async function(web3) {
   return web3.utils.toChecksumAddress(accounts[0]);
 };
 
+async function getPool(web3, from, to) {
+  try {
+    const mooniFactory = new web3.eth.Contract(
+      require("../abis/MooniFactory.json"),
+      mooniFactoryAddress
+    );
+
+    const mooniswapPoolAddress = await mooniFactory.methods
+      .pools(from, to)
+      .call();
+    if (mooniswapPoolAddress === address0x)
+      throw new Error("The pool dont exists");
+
+    return mooniswapPoolAddress;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+}
+
 export default {
   instanceWeb3,
-  getUser
+  getUser,
+  mooniswapOrdersAddress,
+  getPool
 };

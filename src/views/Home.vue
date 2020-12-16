@@ -1,9 +1,8 @@
 <template>
-  <div class="container mt-5">
+  <div class="container-fluid mt-5">
     <div class="row">
-      <div class="col-sm-1" />
 
-      <div class="col-sm-10 text-center">
+      <div class="col-sm-12 text-center">
       <beat-loader
         :loading="isLoading"
         :color="'#428bca'"
@@ -12,8 +11,6 @@
       />
         <order-table v-if="!isLoading" :orders="orders" />
       </div>
-
-      <div class="col-sm-1" />
     </div>
   </div>
 </template>

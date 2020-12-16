@@ -12,20 +12,13 @@
         <div class="col-sm-2" />
 
         <div class="col-sm-8">
-          <div class="navbar-nav h1 text-center mt-2 mb-5">
+          <div class="navbar-nav h1 text-center mt-2 mb-4">
             Order Detail
           </div>
 
           <dl class="row">
             <dt class="col-sm-3">Order Id: </dt>
             <dd class="col-sm-9">{{ order.orderId }}</dd>
-
-            <dt class="col-sm-3">MooniswapOrders: </dt>
-            <dd class="col-sm-9">
-              <a :href="`https://etherscan.io/address/${order.mooniswapOrdersAddress}`" target="_blank">
-                {{ order.mooniswapOrdersAddress }}
-              </a>
-            </dd>
 
             <dt class="col-sm-3">MooniswapPool: </dt>
             <dd class="col-sm-9">
@@ -65,7 +58,7 @@
             </dd>
 
             <dt class="col-sm-3">Expiry: </dt>
-            <dd class="col-sm-9">{{ order.expiry | toFormatPrice }}</dd>
+            <dd class="col-sm-9">{{ order.expiry | toDate }}</dd>
 
             <dt class="col-sm-3">Salt: </dt>
             <dd class="col-sm-9">{{ order.salt }}</dd>

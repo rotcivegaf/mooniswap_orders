@@ -5,7 +5,7 @@
 
       <div class="col-sm-8">
         <form class="review-form" @submit.prevent="onSubmit">
-          <div class="navbar-nav h1 text-center mb-3">
+          <div class="navbar-nav h1 text-center mb-4">
             Sign Order and Provide
           </div>
           <div
@@ -23,7 +23,7 @@
                     ? 'form-control text-success'
                     : 'form-control text-danger'
                 "
-                :id="i.items"
+                : ="i.items"
                 :type="i.type"
                 v-model="i.value"
                 @change="onInputChange($event, i)"
@@ -32,7 +32,7 @@
           </div>
           <div class="form-group row">
             <div class="col-sm-10">
-              <standard-button class="mt-3" type="submit" :title="buttonName" />
+              <standard-button class="mt-3" type="submit" title="Sign & Provide" />
             </div>
           </div>
         </form>
@@ -57,20 +57,15 @@ export default {
     return {
       web3: undefined,
       user: undefined,
-      optionSelected: "Sign Order and Provide",
-      options: ["Sign Order and Provide", "Provide an Order"],
-      buttonName: "Sign & Provide",
       inputs: {
-        mooniswapOrdersAddress: { type: "address", text: "MooniswapOrders", valid: null },
-        mooniswapPoolAddress: { type: "address", text: "MooniswapPool", valid: null },
-        fromToken: { type: "address", text: "From Token", valid: null },
-        toToken: { type: "address", text: "To Token", valid: null },
-        fromAmount: { type: "hex32", text: "From Amount", valid: null },
-        minReturn: { type: "hex32", text: "Min Return", valid: null },
-        maxLoss: { type: "hex32", text: "Max Loss", valid: null },
-        referral: { type: "address", text: "Referral", valid: null },
-        expiry: { type: "hex32", text: "Expiry", valid: null },
-        salt: { type: "hex32", text: "Salt", valid: null }
+        fromToken:              { type: "address", text: "From Token",      valid: null, value: "0xc778417E063141139Fce010982780140Aa0cD5Ab" }, // WETH
+        toToken:                { type: "address", text: "To Token",        valid: null, value: "0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF" }, // USDC
+        fromAmount:             { type: "number",  text: "From Amount",     valid: null, value: "1" },
+        minReturn:              { type: "number",  text: "Min Return",      valid: null, value: "1" },
+        maxLoss:                { type: "number",  text: "Max Loss",        valid: null, value: "1" },
+        referral:               { type: "address", text: "Referral",        valid: null, value: "0x225bEA75d0B4c0686597097d28d81DB86b42ee78" },
+        expiry:                 { type: "number",  text: "Expiry",          valid: null, value: "1610074847" },
+        salt:                   { type: "hex32",   text: "Salt",            valid: null, value: "0x225bEA1275d0B4c0686597097d28d81DB86b42ee781234567891234567891234" }
       }
     };
   },
@@ -103,9 +98,15 @@ export default {
             input.valid = false;
           }
           break;
+        case "number":
+          try {
+            input.valid = this.web3.utils.isBN(this.web3.utils.toBN(event.target.value));
+          } catch (error) {
+            input.valid = false;
+          }
+          break;
         case "hex32":
-          // TODO check expiry and fee
-          input.valid = true;
+          input.valid = event.target.value.length === 66 && this.web3.utils.isHexStrict(event.target.value)
           break;
       }
 
@@ -114,28 +115,21 @@ export default {
       }
     },
 
-    onSelect(event) {
-      Object.keys(this.inputs).forEach(i => (this.inputs[i].show = true));
-      this.optionSelected = event.target.value;
-
-      this.inputs.sig.show = false;
-      this.buttonName = "Sign & Provide";
-    },
-
     async onSubmit() {
-      const args = {};
-      try {
-        args.mooniswapOrdersAddress = this.inputs.mooniswapOrdersAddress.value;
-        args.mooniswapPoolAddress = this.inputs.mooniswapPoolAddress.value;
-        args.fromToken = this.inputs.fromToken.value;
-        args.toToken = this.inputs.toToken.value;
-        args.fromAmount = this.inputs.fromAmount.value;
-        args.minReturn = this.inputs.minReturn.value;
-        args.maxLoss = this.inputs.maxLoss.value;
-        args.referral = this.inputs.referral.value;
-        args.expiry = this.inputs.expiry.value;
-        args.salt = this.inputs.salt.value;
+      const args = {
+        mooniswapOrdersAddress: web3Manager.mooniswapOrdersAddress,
+        fromToken: this.inputs.fromToken.value,
+        toToken: this.inputs.toToken.value,
+        fromAmount: this.inputs.fromAmount.value,
+        minReturn: this.inputs.minReturn.value,
+        maxLoss: this.inputs.maxLoss.value,
+        referral: this.inputs.referral.value,
+        expiry: this.inputs.expiry.value,
+        salt: this.inputs.salt.value,
+      }
+      args.mooniswapPoolAddress = await web3Manager.getPool(this.web3, args.fromToken, args.toToken);
 
+      try {
         args.orderId = this.web3.utils.soliditySha3(
           { t: "address", v: args.mooniswapOrdersAddress },
           { t: "address", v: args.mooniswapPoolAddress },
