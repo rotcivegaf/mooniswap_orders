@@ -30,14 +30,14 @@
             <dt class="col-sm-3">From Token: </dt>
             <dd class="col-sm-9">
               <a :href="`https://etherscan.io/address/${order.fromToken}`" target="_blank">
-                {{ order.fromToken }}
+                {{ order.fromTokenSymbol }}
               </a>
             </dd>
 
             <dt class="col-sm-3">To Token: </dt>
             <dd class="col-sm-9">
               <a :href="`https://etherscan.io/address/${order.toToken}`" target="_blank">
-                {{ order.toToken }}
+                {{ order.toTokenSymbol }}
               </a>
             </dd>
 
