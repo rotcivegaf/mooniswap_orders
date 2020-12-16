@@ -18,6 +18,11 @@ export default new Router({
       component: Home
     },
     {
+      path: "/mooniswap_orders",
+      name: "mooniswap_orders",
+      component: Home
+    },
+    {
       path: "/about",
       name: "About",
       component: About
