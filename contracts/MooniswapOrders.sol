@@ -73,7 +73,7 @@ contract MooniswapOrders {
         bytes32 orderId = _toOrder(_mooniswapPool, _fromToken, _toToken, _fromAmount, _minReturn, _maxLoss, _referral, _expiry, _salt);
         address owner = recoveryOwner(orderId, _signature);
 
-        require(!canceledOrders[owner][orderId], "MooniswapOrders: The loan hash was canceled");
+        require(!canceledOrders[owner][orderId], "MooniswapOrders: The order hash was canceled");
         canceledOrders[owner][orderId] = true;
 
         // Take the owner from tokens and approve the Mooniswap contract
