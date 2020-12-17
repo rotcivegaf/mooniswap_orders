@@ -31,7 +31,14 @@ module.exports = class SignerBot {
         );
 
         if (await this.canExecuteTx(orderTx)) {
-          await this.executeTx(orderTx);
+          const res = await this.executeTx(orderTx);
+
+          if (res instanceof Error) {
+            console.log(res);
+          } else {
+            order.message = res.transactionHash;
+            await process.redis.setAsync(keys[i], JSON.stringify(order));
+          }
         }
       }
 
@@ -55,16 +62,12 @@ module.exports = class SignerBot {
   }
 
   async executeTx (orderTx) {
-    const tx = await process.walletManager.sendTx(
+    return process.walletManager.sendTx(
       orderTx,
       {
         gas: await process.walletManager.estimateGas(orderTx),
         gasPrice: await process.web3.eth.getGasPrice(),
       },
     );
-
-    if (tx instanceof Error) {
-      console.log(tx);
-    }
   }
 };
