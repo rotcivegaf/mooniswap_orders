@@ -146,16 +146,10 @@ export default {
         window.alert("Invalid data");
       }
 
-      const accounts = await this.web3.eth.getAccounts()
-      args.signature = await this.web3.eth.personal.sign(args.orderId, accounts[0])
+      args.signature = await this.web3.eth.personal.sign(args.orderId, this.user)
 
-      args.owner = this.web3.eth.accounts.recover({
-        messageHash: args.orderId,
-        r: '0x' + args.signature.substring(2).substring(0, 64),
-        s: '0x' + args.signature.substring(2).substring(64, 128),
-        signature: args.signature,
-        v: '0x' + args.signature.substring(2).substring(128, 130)
-      });
+      args.owner = await this.web3.eth.personal.ecRecover(args.orderId, args.signature);
+      args.owner = this.web3.utils.toChecksumAddress(args.owner)
 
       if (args.owner === this.user) {
         await api.saveOrder(args);
