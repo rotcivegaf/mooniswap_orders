@@ -43,7 +43,7 @@ This function uses to execute a signed Order.
 
 When an user sign a order swap on Mooniswap should be specify address of the `poll`, the `from token`, `to token` and the`from token amount`, also the `expiry` and a `salt`.
 The `minReturn` is used for the amount of To Token to be received for the amount of From Token.
-The `maxLoss` is used for order type, if is greater than To Token Amount is a Take Profit order else is a Stop Loss Limit order. 
+The `maxLoss` is used for order type, if is greater than To Token Amount is a 'Take Profit Order' else is a "Stop Loss Limit Order". 
 Another observation of masLoss parameter its if is a Take Profit order the minLoss can be really hight.
 
 The contract require this: `minReturn <= To Token Amount <= maxLoss`
@@ -60,6 +60,7 @@ The contract require this: `minReturn <= To Token Amount <= maxLoss`
 1. If the amount goes up the 1100(minReturn) To Token the order was execute and accept as maximum 1200(maxLoss) To Token
 2. If the amount goes down the 900(maxLoss) To Token the order was execute and accept as minimum 800(minReturn) To Token
 
+Finally, there an another issue, if we have a Stop Loss Limit Order, somebody can manipulate the price to execute this order(Front Running).
 
 ### Ropsten Contracts Addresses
 
