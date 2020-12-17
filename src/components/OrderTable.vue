@@ -14,6 +14,7 @@
           <th scope="col">Expiry</th>
           <th scope="col">Salt</th>
           <th scope="col">Signature</th>
+          <th scope="col">Tx Hash</th>
         </tr>
       </thead>
       <tbody>
@@ -49,6 +50,14 @@
           <td>{{ o.expiry | toDate }}</td>
           <td>{{ o.salt | shortBytes }}</td>
           <td>{{ o.signature | shortBytes }}</td>
+
+          <td v-if="o.message.length === 66">
+            <a :href="`https://etherscan.io/address/${o.message}`" target="_blank">{{
+              o.message | shortBytes
+            }}</a>
+          </td>
+          <td v-else>{{ o.message }}</td>
+
         </tr>
       </tbody>
     </table>
