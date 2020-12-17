@@ -1,9 +1,9 @@
-name: Test
+name: Coverage
 
 on: push
 
 jobs:
-  test:
+  coverage:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -19,4 +19,5 @@ jobs:
 
       - run: npm ci
         if: steps.cache.outputs.cache-hit != 'true'
-      - run: npm run test
+      - run: npm run coverage
+      - uses: codecov/codecov-action@v1
