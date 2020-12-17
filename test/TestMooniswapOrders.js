@@ -205,7 +205,7 @@ contract('MooniswapOrders', function (accounts) {
         () => mooniswapOrders.executeOrder(
           mooniswapPool.address, DAI.address, WETH.address, bn(1000), bn(0), bn(1000), address0x, bn('999999999999'), salt, signature, { from: sender },
         ),
-        'MooniswapOrders: The loan order was canceled',
+        'MooniswapOrders: The order was canceled',
       );
 
       assert.isTrue(await mooniswapOrders.canceledOrders(signer, orderId));
