@@ -6,26 +6,7 @@
 
 # Mooniswap Orders
 
-## Front:
-
-  - [https://github.com/rotcivegaf/mooniswap_orders/tree/front](https://github.com/rotcivegaf/mooniswap_orders/tree/front)
-  - [https://rotcivegaf.github.io/mooniswap_orders/](https://rotcivegaf.github.io/mooniswap_orders/)
-
-## Backend
-  - [https://github.com/rotcivegaf/mooniswap_orders/tree/backend](https://github.com/rotcivegaf/mooniswap_orders/tree/backend)
-  - Api: [https://mooniswap-orders-back.herokuapp.com/orders](https://mooniswap-orders-back.herokuapp.com/orders)
-
-## Ropsten Contracts Addresses
-
-  - MooniswapOrders: [0x80E74A883d8A196E755B5e384cb9959beAFefb87](https://ropsten.etherscan.io/address/0x80E74A883d8A196E755B5e384cb9959beAFefb87)
-
-  - MooniFactory: [0xcdDB95AbF5Da5395F7De7936CE7Cf569aF891651](https://ropsten.etherscan.io/address/0xcdDB95AbF5Da5395F7De7936CE7Cf569aF891651)
-  - Pool(WETH/USDC): [0xd4fd72E859380B33E742bb7eBe633aa432628411](https://ropsten.etherscan.io/address/0xd4fd72E859380B33E742bb7eBe633aa432628411)
-  
-  - WETH9: [0xc778417E063141139Fce010982780140Aa0cD5Ab](https://ropsten.etherscan.io/address/0xc778417E063141139Fce010982780140Aa0cD5Ab)  
-  - Test USDC: [0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF](https://ropsten.etherscan.io/address/0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF)
-
-## Explain
+## Contracts
 
   ### The Mooniswap Orders Contract:
   This contract has 2 important function:
@@ -78,3 +59,29 @@ The contract require this: `minReturn <= To Token Amount <= maxLoss`
 
 1. If the amount goes up the 1100(minReturn) To Token the order was execute and accept as maximum 1200(maxLoss) To Token
 2. If the amount goes down the 900(maxLoss) To Token the order was execute and accept as minimum 800(minReturn) To Token
+
+
+### Ropsten Contracts Addresses
+
+  - MooniswapOrders: [0x80E74A883d8A196E755B5e384cb9959beAFefb87](https://ropsten.etherscan.io/address/0x80E74A883d8A196E755B5e384cb9959beAFefb87)
+
+  - MooniFactory: [0xcdDB95AbF5Da5395F7De7936CE7Cf569aF891651](https://ropsten.etherscan.io/address/0xcdDB95AbF5Da5395F7De7936CE7Cf569aF891651)
+  - Pool(WETH/USDC): [0xd4fd72E859380B33E742bb7eBe633aa432628411](https://ropsten.etherscan.io/address/0xd4fd72E859380B33E742bb7eBe633aa432628411)
+  
+  - WETH9: [0xc778417E063141139Fce010982780140Aa0cD5Ab](https://ropsten.etherscan.io/address/0xc778417E063141139Fce010982780140Aa0cD5Ab)  
+  - Test USDC: [0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF](https://ropsten.etherscan.io/address/0x99c1C36DEe5C3B62723DC4223F4352bBf1Da0BfF)
+
+### The front
+  
+  The front provide the signatures to the back and show a table with all signatures.
+
+  - [https://github.com/rotcivegaf/mooniswap_orders/tree/front](https://github.com/rotcivegaf/mooniswap_orders/tree/front)
+  - [https://rotcivegaf.github.io/mooniswap_orders/](https://rotcivegaf.github.io/mooniswap_orders/)
+
+### The Back and Bot Signer
+  
+  In the back storage all the signatures provide by the front.
+  The signer bot consult the back and execute the orders when can.
+  
+  - [https://github.com/rotcivegaf/mooniswap_orders/tree/backend](https://github.com/rotcivegaf/mooniswap_orders/tree/backend)
+  - Api: [https://mooniswap-orders-back.herokuapp.com/orders](https://mooniswap-orders-back.herokuapp.com/orders)
