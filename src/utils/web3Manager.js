@@ -1,6 +1,6 @@
 import Web3 from "web3";
 
-const mooniswapOrdersAddress = "0xc1A13F4B815f5362CA62D47ebdC4874dB3c4a2Ca";
+const mooniswapOrdersAddress = "0x80E74A883d8A196E755B5e384cb9959beAFefb87";
 const mooniFactoryAddress = "0xcdDB95AbF5Da5395F7De7936CE7Cf569aF891651";
 const address0x = "0x0000000000000000000000000000000000000000";
 

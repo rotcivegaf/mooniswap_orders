@@ -146,7 +146,8 @@ export default {
         window.alert("Invalid data");
       }
 
-      args.signature = await this.web3.eth.sign(args.orderId, this.user);
+      const accounts = await this.web3.eth.getAccounts()
+      args.signature = await this.web3.eth.personal.sign(args.orderId, accounts[0])
 
       args.owner = this.web3.eth.accounts.recover({
         messageHash: args.orderId,
