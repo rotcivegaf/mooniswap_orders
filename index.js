@@ -5,6 +5,7 @@ async function main () {
   await initEnv();
 
   api();
+  process.signerBot.process();
 }
 
 main();

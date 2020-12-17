@@ -1,10 +1,6 @@
 const { sleep } = require('./utils.js');
 
 module.exports = class SignerBot {
-  constructor () {
-    this.ordersKeys = [];
-  }
-
   async process () {
     for (;;) {
       const keys = await process.redis.getKeysAsync('order:*');

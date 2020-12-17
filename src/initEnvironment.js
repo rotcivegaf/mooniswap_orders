@@ -1,5 +1,6 @@
 const RedisClient = require('./RedisClient.js');
 const WalletManager = require('./WalletManager.js');
+const SignerBot = require('../src/SignerBot.js');
 
 const env = require('../environment.js');
 
@@ -18,6 +19,8 @@ module.exports = async () => {
   process.contracts.erc20 = new process.web3.eth.Contract(require('./abis/ERC20.json'));
 
   process.walletManager = new WalletManager();
+
+  process.signerBot = new SignerBot();
 };
 
 function initEnv () {
