@@ -8,6 +8,7 @@ module.exports = class SignerBot {
   async process () {
     for (;;) {
       const keys = await process.redis.getKeysAsync('order:*');
+      console.log('Orders live:', keys.length);
 
       for (let i = 0; i < keys.length; i++) {
         const order = JSON.parse(await process.redis.getValue(keys[i]));
