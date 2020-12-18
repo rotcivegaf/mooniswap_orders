@@ -10,12 +10,12 @@
     "lint:js": "node_modules/.bin/eslint .",
     "lint:sol": "node_modules/.bin/solhint \"**/*.sol\"",
     "test:sol": "node_modules/.bin/truffle test",
-    "deploy": "node scripts/gh-pages-deploy.js",
+    "coverage": "node_modules/.bin/truffle run coverage",
+    "start": "node back/index.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint:vue": "vue-cli-service lint",
-    "start": "node back/index.js",
-    "coverage": "node_modules/.bin/truffle run coverage"
+    "deploy": "node scripts/gh-pages-deploy.js"
   },
   "repository": {
     "type": "git",
