@@ -1,9 +1,9 @@
-name: Lint
+name: Lint JS
 
 on: push
 
 jobs:
-  lint:
+  lintJS:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,4 +20,3 @@ jobs:
       - run: npm ci
         if: steps.cache.outputs.cache-hit != 'true'
       - run: npm run lint:js
-      - run: npm run lint:sol

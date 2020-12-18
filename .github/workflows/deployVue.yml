@@ -1,0 +1,22 @@
+name: Deploy Vue to github pages
+on:
+  push:
+    branches:
+      - master
+jobs:
+  deployVue:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          version:  12.x
+      - name: Checkout branch
+
+      - name: Clean install dependencies
+        run: npm ci
+
+      - name: Run deploy script
+        run: |
+          git config user.name "rotciegaf" && git config user.email "victorfage@gmail.com"
+          npm run deploy
