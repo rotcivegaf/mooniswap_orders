@@ -3,7 +3,7 @@ name: Test Contracts
 on: push
 
 jobs:
-  test:
+  testSol:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2

@@ -3,7 +3,7 @@ name: Lint JS
 on: push
 
 jobs:
-  lint:
+  lintJS:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
