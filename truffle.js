@@ -11,4 +11,6 @@ module.exports = {
     },
   },
   plugins: ['solidity-coverage'],
+  // eslint-disable-next-line
+  test_directory: './contracts/test',
 };

@@ -7,18 +7,14 @@
   },
   "main": "index.js",
   "scripts": {
+    "lint:js": "node_modules/.bin/eslint .",
+    "lint:sol": "node_modules/.bin/solhint \"**/*.sol\"",
+    "test:sol": "node_modules/.bin/truffle test",
     "deploy": "node scripts/gh-pages-deploy.js",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
     "lint:vue": "vue-cli-service lint",
     "start": "node index.js",
-    "lint:js": "node_modules/.bin/eslint .",
-    "lint:js:fix": "node_modules/.bin/eslint . --fix",
-    "lint:sol": "node_modules/.bin/solhint \"**/*.sol\"",
-    "lint:sol:fix": "node_modules/.bin/solhint \"**/*.sol\" --fix",
-    "lint": "npm run lint:js && npm run lint:sol",
-    "lint:fix": "npm run lint:js:fix && npm run lint:sol:fix",
-    "test": "node_modules/.bin/truffle test",
     "coverage": "node_modules/.bin/truffle run coverage"
   },
   "repository": {
