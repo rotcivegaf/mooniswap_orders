@@ -76,7 +76,6 @@ Finally, there an another issue, if we have a Stop Loss Limit Order, somebody ca
   
   The front provide the signatures to the back and show a table with all signatures.
 
-  - [https://github.com/rotcivegaf/mooniswap_orders/tree/front](https://github.com/rotcivegaf/mooniswap_orders/tree/front)
   - [https://rotcivegaf.github.io/mooniswap_orders/](https://rotcivegaf.github.io/mooniswap_orders/)
 
 ### The Back and Bot Signer
@@ -84,5 +83,4 @@ Finally, there an another issue, if we have a Stop Loss Limit Order, somebody ca
   In the back storage all the signatures provide by the front.
   The signer bot consult the back and execute the orders when can.
   
-  - [https://github.com/rotcivegaf/mooniswap_orders/tree/backend](https://github.com/rotcivegaf/mooniswap_orders/tree/backend)
   - Api: [https://mooniswap-orders-back.herokuapp.com/orders](https://mooniswap-orders-back.herokuapp.com/orders)
